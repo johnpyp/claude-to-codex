@@ -5,6 +5,8 @@ A node cli for keeping claude code skills, CLAUDE.md files, subagents, commands,
 ## Coding
 
 - Always use bun install / bun run for stuff, but keep all the code node compatible so it will work in the end with `npx` / `pnpm dlx` / etc.
+- Always type check your code.
+- No casts or anys. Use zod for validation from unstructured places.
 - For tests prefer integration/e2e tests with fixture workspaces to test on instead of unit tests
 - Always look up the docs for the respective platforms
 - Use `cac` for the cli framework
