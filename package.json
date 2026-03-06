@@ -1,6 +1,6 @@
 {
   "name": "claude-to-codex",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Convert Claude Code repo artifacts (CLAUDE.md, skills, commands, agents) into Codex-native equivalents",
   "keywords": [
     "claude",
