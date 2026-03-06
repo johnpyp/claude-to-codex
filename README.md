@@ -7,14 +7,14 @@ Convert Claude Code repo artifacts into Codex-native equivalents. Run it once to
 
 ## What it converts
 
-| Claude Code                | Codex                                        |
-| -------------------------- | -------------------------------------------- |
-| `CLAUDE.md`                | `AGENTS.md`                                  |
-| `CLAUDE.local.md`          | `AGENTS.override.md`                         |
-| `.claude/CLAUDE.md`        | `.agents/AGENTS.md`                          |
-| `.claude/skills/**`        | `.agents/skills/**`                          |
-| `.claude/commands/**`      | `.agents/skills/**`                          |
-| `.claude/agents/**`        | `.codex/config.toml` and `agents/*.toml`     |
+| Claude Code           | Codex                                    |
+| --------------------- | ---------------------------------------- |
+| `CLAUDE.md`           | `AGENTS.md`                              |
+| `CLAUDE.local.md`     | `AGENTS.override.md`                     |
+| `.claude/CLAUDE.md`   | `.agents/AGENTS.md`                      |
+| `.claude/skills/**`   | `.agents/skills/**`                      |
+| `.claude/commands/**` | `.agents/skills/**`                      |
+| `.claude/agents/**`   | `.codex/config.toml` and `agents/*.toml` |
 
 `.claude/rules/**` are discovered only indirectly through copied text and are not converted.
 

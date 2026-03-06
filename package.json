@@ -2,25 +2,25 @@
   "name": "claude-to-codex",
   "version": "0.1.0",
   "description": "Convert Claude Code repo artifacts (CLAUDE.md, skills, commands, agents) into Codex-native equivalents",
-  "author": {
-    "name": "johnpyp",
-    "email": "johnpyp.dev@gmail.com"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/johnpyp/claude-to-codex"
-  },
+  "keywords": [
+    "claude",
+    "cli",
+    "codex",
+    "migration"
+  ],
   "homepage": "https://github.com/johnpyp/claude-to-codex#readme",
   "bugs": {
     "url": "https://github.com/johnpyp/claude-to-codex/issues"
   },
-  "keywords": [
-    "claude",
-    "codex",
-    "migration",
-    "cli"
-  ],
+  "license": "MIT",
+  "author": {
+    "name": "johnpyp",
+    "email": "johnpyp.dev@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/johnpyp/claude-to-codex"
+  },
   "bin": {
     "claude-to-codex": "./dist/bin.js"
   },
