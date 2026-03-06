@@ -1,4 +1,9 @@
-import type { GeneratedFile, NormalizedArtifact, NormalizedClaudeDoc, ReportItem } from "../core/types.js";
+import type {
+  GeneratedFile,
+  NormalizedArtifact,
+  NormalizedClaudeDoc,
+  ReportItem,
+} from "../core/types.js";
 import { isSymlinkTo } from "../utils/fs.js";
 
 export async function buildUnsymlinkFiles(

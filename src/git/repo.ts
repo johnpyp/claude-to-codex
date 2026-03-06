@@ -10,11 +10,7 @@ interface CommandResult {
   stderr: string;
 }
 
-async function runCommand(
-  command: string,
-  args: string[],
-  cwd: string,
-): Promise<CommandResult> {
+async function runCommand(command: string, args: string[], cwd: string): Promise<CommandResult> {
   return await new Promise((resolve, reject) => {
     const child = spawn(command, args, { cwd, stdio: ["ignore", "pipe", "pipe"] });
 
@@ -60,15 +56,11 @@ export async function resolveRepoContext(
 
   const gitInfo = await inspectGit(cwd);
   if (!gitInfo.isGitRepo || !gitInfo.gitRoot) {
-    throw new CliError(
-      "Not inside a git repository. Pass --root-dir <path> to run outside git.",
-    );
+    throw new CliError("Not inside a git repository. Pass --root-dir <path> to run outside git.");
   }
 
   if (path.resolve(cwd) !== gitInfo.gitRoot) {
-    throw new CliError(
-      `Run from the git root (${gitInfo.gitRoot}) or pass --root-dir explicitly.`,
-    );
+    throw new CliError(`Run from the git root (${gitInfo.gitRoot}) or pass --root-dir explicitly.`);
   }
 
   return {

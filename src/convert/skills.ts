@@ -72,7 +72,11 @@ export async function convertSkill(
       content: rewrittenContent.content,
       encoding: "utf8",
       sourcePaths: [skill.source.relativePath],
-      infos: buildRewriteInfo(skill.source.relativePath, targetRelativePath, rewrittenContent.replacements),
+      infos: buildRewriteInfo(
+        skill.source.relativePath,
+        targetRelativePath,
+        rewrittenContent.replacements,
+      ),
       generator: "skill",
     });
   }
@@ -108,10 +112,7 @@ function rewriteSkillMarkdownWithInfo(
 
   return {
     content:
-      stringifyFrontmatterDocument(
-        rewrittenBody.content.trimStart(),
-        parsed.data,
-      ).trimEnd() + "\n",
+      stringifyFrontmatterDocument(rewrittenBody.content.trimStart(), parsed.data).trimEnd() + "\n",
     infos: buildRewriteInfo(sourcePath, targetPath, rewrittenBody.replacements),
   };
 }

@@ -31,13 +31,20 @@ export function toIntermediateRepresentation(
   for (const artifact of parsedArtifacts) {
     artifact.frontmatterIssues.forEach((item) => warnings.push(item));
 
-    if (artifact.kind === "claude-md" || artifact.kind === "claude-local-md" || artifact.kind === "claude-hidden-md") {
+    if (
+      artifact.kind === "claude-md" ||
+      artifact.kind === "claude-local-md" ||
+      artifact.kind === "claude-hidden-md"
+    ) {
       normalizedArtifacts.push(normalizeClaudeDoc(rootDir, artifact));
       continue;
     }
 
     if (artifact.kind === "skill") {
-      const parsedFrontmatter = parseSkillLikeFrontmatter(artifact.frontmatter, artifact.relativePath);
+      const parsedFrontmatter = parseSkillLikeFrontmatter(
+        artifact.frontmatter,
+        artifact.relativePath,
+      );
       parsedFrontmatter.issues.forEach((item) => warnings.push(item));
       normalizedArtifacts.push(normalizeSkill(rootDir, artifact, parsedFrontmatter));
       continue;
@@ -53,7 +60,10 @@ export function toIntermediateRepresentation(
         continue;
       }
 
-      const parsedFrontmatter = parseSkillLikeFrontmatter(artifact.frontmatter, artifact.relativePath);
+      const parsedFrontmatter = parseSkillLikeFrontmatter(
+        artifact.frontmatter,
+        artifact.relativePath,
+      );
       parsedFrontmatter.issues.forEach((item) => warnings.push(item));
       normalizedArtifacts.push(normalizeCommand(rootDir, artifact, parsedFrontmatter));
       continue;

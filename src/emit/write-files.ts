@@ -122,16 +122,16 @@ export class ConversionPlanExecutor {
 
     const targetIsSymlink = await isSymlinkPath(file.absolutePath);
     const alreadyHasUnsymlinkInfo = file.infos.some((info) => info.code === "unsymlink-path");
-    const unsymlinkInfo = targetIsSymlink
-      && !alreadyHasUnsymlinkInfo
-      ? [
-          {
-            code: "unsymlink-path",
-            message: `${file.relativePath}: symlink will be replaced with a concrete file.`,
-            targetPath: file.relativePath,
-          } satisfies ReportItem,
-        ]
-      : [];
+    const unsymlinkInfo =
+      targetIsSymlink && !alreadyHasUnsymlinkInfo
+        ? [
+            {
+              code: "unsymlink-path",
+              message: `${file.relativePath}: symlink will be replaced with a concrete file.`,
+              targetPath: file.relativePath,
+            } satisfies ReportItem,
+          ]
+        : [];
 
     if (!(await pathExists(file.absolutePath))) {
       planInfos.push(...file.infos, ...unsymlinkInfo);
@@ -148,7 +148,7 @@ export class ConversionPlanExecutor {
       };
     }
 
-    if (await this.hasMatchingContent(file) && !targetIsSymlink) {
+    if ((await this.hasMatchingContent(file)) && !targetIsSymlink) {
       return {
         type: "skip",
         absolutePath: file.absolutePath,
@@ -177,12 +177,15 @@ export class ConversionPlanExecutor {
 
   private async hasMatchingContent(file: GeneratedFile): Promise<boolean> {
     if (file.encoding === "utf8") {
-      return typeof file.content === "string"
-        && (await readUtf8(file.absolutePath)) === file.content;
+      return (
+        typeof file.content === "string" && (await readUtf8(file.absolutePath)) === file.content
+      );
     }
 
-    return file.content instanceof Uint8Array
-      && bytesEqual(await readBytes(file.absolutePath), file.content);
+    return (
+      file.content instanceof Uint8Array &&
+      bytesEqual(await readBytes(file.absolutePath), file.content)
+    );
   }
 
   private async writeOperation(operation: ConversionPlanOperation): Promise<void> {

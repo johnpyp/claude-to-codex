@@ -38,7 +38,9 @@ describe("claude-to-codex CLI", () => {
     expect(result.stdout).toContain("Info:");
     expect(result.stdout).toContain("rewrote Claude path references in AGENTS.md");
     expect(result.stdout).toContain("CLAUDE.md -> AGENTS.md");
-    expect(result.stdout).not.toContain("rewrote Claude path references in .agents/skills/plain/SKILL.md");
+    expect(result.stdout).not.toContain(
+      "rewrote Claude path references in .agents/skills/plain/SKILL.md",
+    );
     expect(result.stdout).toContain("command frontmatter is missing");
   });
 
@@ -69,7 +71,9 @@ describe("claude-to-codex CLI", () => {
     expect(operationByPath.has(".agents/skills/no-frontmatter/SKILL.md")).toBeFalse();
     expect(operationByPath.has("agents/stale.toml")).toBeFalse();
     expect(operationByPath.has(".agents/skills/stale/SKILL.md")).toBeFalse();
-    const warningCodes = new Set(output.plan.warnings.map((warning: { code: string }) => warning.code));
+    const warningCodes = new Set(
+      output.plan.warnings.map((warning: { code: string }) => warning.code),
+    );
     expect(warningCodes.has("agent-mcp-server-reference")).toBeTrue();
     expect(warningCodes.has("frontmatter-invalid-field")).toBeTrue();
     expect(warningCodes.has("command-frontmatter-missing")).toBeTrue();
@@ -198,10 +202,14 @@ describe("claude-to-codex CLI", () => {
     ) as Record<string, any>;
     expect(invalidToml.sandbox_mode).toBe("read-only");
 
-    const report = JSON.parse(await readFile(path.join(workspace, "codex-migration-report.json"), "utf8"));
+    const report = JSON.parse(
+      await readFile(path.join(workspace, "codex-migration-report.json"), "utf8"),
+    );
     expect(report.discoveredSourceArtifacts).not.toContain("CLAUDE.local.md");
     expect(report.discoveredSourceArtifacts).toContain(".claude/commands/no-frontmatter.md");
-    expect(report.infos.some((info: { code: string }) => info.code === "claude-reference-rewrite")).toBeTrue();
+    expect(
+      report.infos.some((info: { code: string }) => info.code === "claude-reference-rewrite"),
+    ).toBeTrue();
     expect(
       report.infos.some(
         (info: { details?: { replacements?: Array<{ from: string; to: string }> } }) =>
@@ -211,17 +219,23 @@ describe("claude-to-codex CLI", () => {
       ),
     ).toBeTrue();
     expect(
-      report.infos.some((info: { targetPath?: string }) => info.targetPath === ".agents/skills/plain/SKILL.md"),
+      report.infos.some(
+        (info: { targetPath?: string }) => info.targetPath === ".agents/skills/plain/SKILL.md",
+      ),
     ).toBeFalse();
     expect(
       report.emittedTargetArtifacts.some(
         (item: { path: string }) => item.path === ".agents/skills/no-frontmatter/SKILL.md",
       ),
     ).toBeFalse();
-    expect(report.warnings.some((warning: { code: string }) => warning.code === "gitignored-target")).toBeFalse();
+    expect(
+      report.warnings.some((warning: { code: string }) => warning.code === "gitignored-target"),
+    ).toBeFalse();
 
     expect(await pathExists(path.join(workspace, "agents", "stale.toml"))).toBeTrue();
-    expect(await pathExists(path.join(workspace, ".agents", "skills", "stale", "SKILL.md"))).toBeTrue();
+    expect(
+      await pathExists(path.join(workspace, ".agents", "skills", "stale", "SKILL.md")),
+    ).toBeTrue();
   });
 
   it("does not emit the report by default", async () => {
@@ -260,7 +274,9 @@ describe("claude-to-codex CLI", () => {
 
     expect(operationByPath.get("AGENTS.md")).toBe("overwrite");
     expect(operationByPath.get("packages/api/CLAUDE.md")).toBe("overwrite");
-    expect(plan.infos.filter((item: { code: string }) => item.code === "unsymlink-path")).toHaveLength(2);
+    expect(
+      plan.infos.filter((item: { code: string }) => item.code === "unsymlink-path"),
+    ).toHaveLength(2);
     expect(
       plan.infos.some(
         (item: { code: string; targetPath?: string; sourcePath?: string }) =>
@@ -274,11 +290,7 @@ describe("claude-to-codex CLI", () => {
       ),
     ).toBeTrue();
 
-    const writeResult = runCli(workspace, [
-      "--write",
-      "--dangerous-allow-dirty-git",
-      "--json",
-    ]);
+    const writeResult = runCli(workspace, ["--write", "--dangerous-allow-dirty-git", "--json"]);
     expect(writeResult.status).toBe(0);
 
     expect((await lstat(path.join(workspace, "AGENTS.md"))).isSymbolicLink()).toBeFalse();
@@ -318,12 +330,7 @@ describe("claude-to-codex CLI", () => {
     await writeFile(path.join(dirtyCaller, "CLAUDE.md"), "# caller is dirty\n", "utf8");
 
     const cleanTarget = await createWorkspace({ git: true });
-    const cleanTargetWrite = runCli(dirtyCaller, [
-      "--root-dir",
-      cleanTarget,
-      "--write",
-      "--json",
-    ]);
+    const cleanTargetWrite = runCli(dirtyCaller, ["--root-dir", cleanTarget, "--write", "--json"]);
 
     expect(cleanTargetWrite.status).toBe(0);
 
@@ -342,11 +349,7 @@ describe("claude-to-codex CLI", () => {
     expect(blocked.status).toBe(1);
     expect(blocked.stderr).toContain("--dangerous-allow-dirty-git");
 
-    const allowed = runCli(workspace, [
-      "--write",
-      "--dangerous-allow-dirty-git",
-      "--json",
-    ]);
+    const allowed = runCli(workspace, ["--write", "--dangerous-allow-dirty-git", "--json"]);
     expect(allowed.status).toBe(0);
   });
 

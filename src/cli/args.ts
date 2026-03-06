@@ -13,10 +13,7 @@ export function registerCliOptions(target: Command): Command {
       "--dangerous-allow-dirty-git",
       "Allow writes when the git worktree has unrelated changes",
     )
-    .option(
-      "--dangerous-no-git-backup",
-      "Allow writes without git-backed rollback safety",
-    );
+    .option("--dangerous-no-git-backup", "Allow writes without git-backed rollback safety");
 }
 
 export function toCliOptions(options: Record<string, unknown>): CliOptions {

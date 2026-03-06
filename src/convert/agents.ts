@@ -21,7 +21,10 @@ export function convertAgents(agents: NormalizedAgent[], rootDir: string): Gener
         agent.roleId,
         {
           description: agent.description ?? "",
-          config_file: path.relative(path.dirname(configPath), agent.roleConfig.configFileAbsolutePath),
+          config_file: path.relative(
+            path.dirname(configPath),
+            agent.roleConfig.configFileAbsolutePath,
+          ),
         },
       ]),
   );
@@ -37,9 +40,7 @@ export function convertAgents(agents: NormalizedAgent[], rootDir: string): Gener
         agents: {
           max_threads: 10,
           max_depth: 1,
-          ...Object.fromEntries(
-            Object.entries(roleEntries).map(([key, value]) => [key, value]),
-          ),
+          ...Object.fromEntries(Object.entries(roleEntries).map(([key, value]) => [key, value])),
         },
       }),
       encoding: "utf8",

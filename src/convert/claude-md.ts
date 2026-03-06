@@ -13,7 +13,11 @@ export function convertClaudeDoc(
     content: rewritten.content,
     encoding: "utf8",
     sourcePaths: [doc.source.relativePath],
-    infos: buildRewriteInfo(doc.source.relativePath, doc.targetRelativePath, rewritten.replacements),
+    infos: buildRewriteInfo(
+      doc.source.relativePath,
+      doc.targetRelativePath,
+      rewritten.replacements,
+    ),
     generator: "claude-doc",
   };
 }

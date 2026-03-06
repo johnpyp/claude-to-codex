@@ -66,7 +66,10 @@ export function normalizeAgent(rootDir: string, artifact: ParsedArtifact): Norma
       message: `${sourcePath}: tool allowlist was approximated as sandbox_mode=read-only.`,
       sourcePath,
     });
-  } else if (disallowedTools && disallowedTools.some((tool) => WRITABLE_TOOLS.has(tool.toLowerCase()))) {
+  } else if (
+    disallowedTools &&
+    disallowedTools.some((tool) => WRITABLE_TOOLS.has(tool.toLowerCase()))
+  ) {
     sandboxMode = "read-only";
     approximatedBehaviors.push({
       code: "agent-tools-disallowed-read-only",
@@ -83,14 +86,55 @@ export function normalizeAgent(rootDir: string, artifact: ParsedArtifact): Norma
 
   const { model, modelReasoningEffort } = mapClaudeModel(parsedFrontmatter.model);
 
-  const mcpServers = parseMcpServers(parsedFrontmatter.mcpServers, sourcePath, approximatedBehaviors, warnings);
+  const mcpServers = parseMcpServers(
+    parsedFrontmatter.mcpServers,
+    sourcePath,
+    approximatedBehaviors,
+    warnings,
+  );
 
-  addDroppedIfPresent(droppedBehaviors, sourcePath, parsedFrontmatter.maxTurns, "agent-max-turns", "maxTurns is unsupported and was dropped.");
-  addDroppedIfPresent(droppedBehaviors, sourcePath, parsedFrontmatter.skills, "agent-skills", "skills preload is unsupported and was dropped.");
-  addDroppedIfPresent(droppedBehaviors, sourcePath, artifact.frontmatter.hooks, "agent-hooks", "hooks are unsupported and were dropped.");
-  addDroppedIfPresent(droppedBehaviors, sourcePath, parsedFrontmatter.memory, "agent-memory", "memory is unsupported and was dropped.");
-  addDroppedIfPresent(droppedBehaviors, sourcePath, parsedFrontmatter.background, "agent-background", "background is unsupported and was dropped.");
-  addDroppedIfPresent(droppedBehaviors, sourcePath, parsedFrontmatter.isolation, "agent-isolation", "isolation is unsupported and was dropped.");
+  addDroppedIfPresent(
+    droppedBehaviors,
+    sourcePath,
+    parsedFrontmatter.maxTurns,
+    "agent-max-turns",
+    "maxTurns is unsupported and was dropped.",
+  );
+  addDroppedIfPresent(
+    droppedBehaviors,
+    sourcePath,
+    parsedFrontmatter.skills,
+    "agent-skills",
+    "skills preload is unsupported and was dropped.",
+  );
+  addDroppedIfPresent(
+    droppedBehaviors,
+    sourcePath,
+    artifact.frontmatter.hooks,
+    "agent-hooks",
+    "hooks are unsupported and were dropped.",
+  );
+  addDroppedIfPresent(
+    droppedBehaviors,
+    sourcePath,
+    parsedFrontmatter.memory,
+    "agent-memory",
+    "memory is unsupported and was dropped.",
+  );
+  addDroppedIfPresent(
+    droppedBehaviors,
+    sourcePath,
+    parsedFrontmatter.background,
+    "agent-background",
+    "background is unsupported and was dropped.",
+  );
+  addDroppedIfPresent(
+    droppedBehaviors,
+    sourcePath,
+    parsedFrontmatter.isolation,
+    "agent-isolation",
+    "isolation is unsupported and was dropped.",
+  );
 
   return {
     kind: "agent",
@@ -123,7 +167,10 @@ function includesWritableTool(tools: string[]): boolean {
   return tools.some((tool) => WRITABLE_TOOLS.has(tool.toLowerCase()));
 }
 
-function mapClaudeModel(model: string | undefined): { model?: string; modelReasoningEffort?: string } {
+function mapClaudeModel(model: string | undefined): {
+  model?: string;
+  modelReasoningEffort?: string;
+} {
   switch ((model ?? "inherit").toLowerCase()) {
     case "opus":
       return { model: "gpt-5.4", modelReasoningEffort: "high" };

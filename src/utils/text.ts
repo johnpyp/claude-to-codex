@@ -49,9 +49,11 @@ export function discoverImports(content: string): string[] {
 }
 
 export function discoverClaudeReferences(content: string): string[] {
-  return [...content.matchAll(/(?:CLAUDE(?:\.local)?\.md|\.claude\/(?:skills|agents|commands|CLAUDE\.md|rules))/g)].map(
-    (match) => match[0],
-  );
+  return [
+    ...content.matchAll(
+      /(?:CLAUDE(?:\.local)?\.md|\.claude\/(?:skills|agents|commands|CLAUDE\.md|rules))/g,
+    ),
+  ].map((match) => match[0]);
 }
 
 export function createClaudeReferenceRewriter(
@@ -128,10 +130,7 @@ export function rewriteClaudeReferences(
     rewritten = rewritten.replace(pattern, (...args) => {
       const match = args[0] as string;
       const captures = args.slice(1, -2) as string[];
-      const next =
-        typeof replacement === "string"
-          ? replacement
-          : replacement(match, ...captures);
+      const next = typeof replacement === "string" ? replacement : replacement(match, ...captures);
 
       recordReplacement(match, next);
       return next;
@@ -143,10 +142,7 @@ export function rewriteClaudeReferences(
   }
 
   applyReplacement(/(?<!@)\.claude\/skills\b/g, ".agents/skills");
-  applyReplacement(
-    /(?<!@)\.claude\/agents\b/g,
-    ".codex/config.toml and .codex/agents/",
-  );
+  applyReplacement(/(?<!@)\.claude\/agents\b/g, ".codex/config.toml and .codex/agents/");
   applyReplacement(/(?<!@)\.claude\/CLAUDE\.md/g, ".agents/AGENTS.md");
   applyReplacement(/(?<!@)CLAUDE\.local\.md/g, "AGENTS.override.md");
   applyReplacement(/(?<!@)CLAUDE\.md/g, "AGENTS.md");

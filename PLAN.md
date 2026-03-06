@@ -62,15 +62,15 @@ The converter should be safe by default, deterministic, and explicit about anyth
 
 ## Canonical Feature Mapping
 
-| Claude source | Codex target | Notes |
-| --- | --- | --- |
-| `CLAUDE.md` | `AGENTS.md` | Copy content, do not symlink, and rewrite Claude-specific references in the copy. |
-| `.claude/CLAUDE.md` | `.agents/AGENTS.md` | Preserve the hidden-scope form by targeting `.agents/AGENTS.md`. |
-| `CLAUDE.local.md` | `AGENTS.override.md` | Local override content should map to the Codex override filename. |
-| `.claude/skills/<name>/SKILL.md` | `.agents/skills/<name>/SKILL.md` | Prefer the Codex repo skill location. |
-| `.claude/commands/<name>.md` | `.agents/skills/<name>/SKILL.md` | Codex custom prompts are deprecated and user-local; repo-shared commands should become skills. |
-| `.claude/agents/*.md` | `.codex/config.toml` + `agents/*.toml` | Emit Codex multi-agent role definitions and per-role config files. |
-| `.claude/rules/**/*.md` | None | Rules are out of scope for automatic migration because they are not 1:1 with Codex rules. |
+| Claude source                    | Codex target                           | Notes                                                                                          |
+| -------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `CLAUDE.md`                      | `AGENTS.md`                            | Copy content, do not symlink, and rewrite Claude-specific references in the copy.              |
+| `.claude/CLAUDE.md`              | `.agents/AGENTS.md`                    | Preserve the hidden-scope form by targeting `.agents/AGENTS.md`.                               |
+| `CLAUDE.local.md`                | `AGENTS.override.md`                   | Local override content should map to the Codex override filename.                              |
+| `.claude/skills/<name>/SKILL.md` | `.agents/skills/<name>/SKILL.md`       | Prefer the Codex repo skill location.                                                          |
+| `.claude/commands/<name>.md`     | `.agents/skills/<name>/SKILL.md`       | Codex custom prompts are deprecated and user-local; repo-shared commands should become skills. |
+| `.claude/agents/*.md`            | `.codex/config.toml` + `agents/*.toml` | Emit Codex multi-agent role definitions and per-role config files.                             |
+| `.claude/rules/**/*.md`          | None                                   | Rules are out of scope for automatic migration because they are not 1:1 with Codex rules.      |
 
 ## Output Layout
 
@@ -280,20 +280,20 @@ Status meanings:
 
 ### `CLAUDE.md` and related memory features
 
-| Source field or feature | Target | Status | Planned handling | Why |
-| --- | --- | --- | --- | --- |
-| `CLAUDE.md` markdown body | `AGENTS.md` markdown body | Yes | Copy content and rewrite Claude-specific path references. | Codex has first-class `AGENTS.md` support. |
-| `.claude/CLAUDE.md` as alternate project file | `.agents/AGENTS.md` | Yes | Copy into `.agents/AGENTS.md` in the same scope. | This preserves the hidden-scope form without colliding with root `AGENTS.md`. |
-| Nested `CLAUDE.md` files in subdirectories | Nested `AGENTS.md` files | Yes | Convert each repo-shared nested file to a same-scope `AGENTS.md`. | Codex supports nested `AGENTS.md` files along the project path. |
-| `@path/to/import` in `CLAUDE.md` | Unchanged markdown content | No | Leave the import syntax untouched. | The plan does not support synthetic inlining for undocumented Codex behavior. |
-| Text references to `CLAUDE.md` files | Text references to `AGENTS.md` | Yes | Rewrite links and prose references in copied output. | The file name changes and the generated docs should stay coherent. |
-| Text references to `.claude/skills` / `.claude/agents` paths | `.agents/*` or `.codex/*` references | Yes | Rewrite based on the concrete feature destination. | The user explicitly wants migrated feature paths rewritten in copied output. |
-| Text references to `.claude/rules` paths | Unchanged markdown content | No | Leave untouched. | Rules are out of scope for automatic migration. |
-| `CLAUDE.local.md` | `AGENTS.override.md` | Partial | Copy into `AGENTS.override.md` in the same scope, but never modify a gitignored target path. | This is the closest Codex override filename, but gitignored targets are non-revertable. |
-| `~/.claude/CLAUDE.md` | None | No | Ignore silently. | User-level Claude config is outside repo sync scope. |
-| Managed policy `CLAUDE.md` | None | No | Ignore silently. | Machine/org policy is not repo state. |
-| `claudeMdExcludes` setting | None | No | Ignore silently. | This is not a repo artifact the sync tool should mutate. |
-| Claude auto memory (`MEMORY.md`, `autoMemoryEnabled`) | None | No | Ignore silently. | Auto-memory is outside the repo artifact sync scope. |
+| Source field or feature                                      | Target                               | Status  | Planned handling                                                                             | Why                                                                                     |
+| ------------------------------------------------------------ | ------------------------------------ | ------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `CLAUDE.md` markdown body                                    | `AGENTS.md` markdown body            | Yes     | Copy content and rewrite Claude-specific path references.                                    | Codex has first-class `AGENTS.md` support.                                              |
+| `.claude/CLAUDE.md` as alternate project file                | `.agents/AGENTS.md`                  | Yes     | Copy into `.agents/AGENTS.md` in the same scope.                                             | This preserves the hidden-scope form without colliding with root `AGENTS.md`.           |
+| Nested `CLAUDE.md` files in subdirectories                   | Nested `AGENTS.md` files             | Yes     | Convert each repo-shared nested file to a same-scope `AGENTS.md`.                            | Codex supports nested `AGENTS.md` files along the project path.                         |
+| `@path/to/import` in `CLAUDE.md`                             | Unchanged markdown content           | No      | Leave the import syntax untouched.                                                           | The plan does not support synthetic inlining for undocumented Codex behavior.           |
+| Text references to `CLAUDE.md` files                         | Text references to `AGENTS.md`       | Yes     | Rewrite links and prose references in copied output.                                         | The file name changes and the generated docs should stay coherent.                      |
+| Text references to `.claude/skills` / `.claude/agents` paths | `.agents/*` or `.codex/*` references | Yes     | Rewrite based on the concrete feature destination.                                           | The user explicitly wants migrated feature paths rewritten in copied output.            |
+| Text references to `.claude/rules` paths                     | Unchanged markdown content           | No      | Leave untouched.                                                                             | Rules are out of scope for automatic migration.                                         |
+| `CLAUDE.local.md`                                            | `AGENTS.override.md`                 | Partial | Copy into `AGENTS.override.md` in the same scope, but never modify a gitignored target path. | This is the closest Codex override filename, but gitignored targets are non-revertable. |
+| `~/.claude/CLAUDE.md`                                        | None                                 | No      | Ignore silently.                                                                             | User-level Claude config is outside repo sync scope.                                    |
+| Managed policy `CLAUDE.md`                                   | None                                 | No      | Ignore silently.                                                                             | Machine/org policy is not repo state.                                                   |
+| `claudeMdExcludes` setting                                   | None                                 | No      | Ignore silently.                                                                             | This is not a repo artifact the sync tool should mutate.                                |
+| Claude auto memory (`MEMORY.md`, `autoMemoryEnabled`)        | None                                 | No      | Ignore silently.                                                                             | Auto-memory is outside the repo artifact sync scope.                                    |
 
 ### Claude skills and legacy commands: frontmatter matrix
 
@@ -301,63 +301,63 @@ The same matrix applies to `.claude/skills/**/SKILL.md` and `.claude/commands/*.
 
 Conversion rule for this section: copy the entire frontmatter first, then mutate only the supported fields below. Unsupported fields stay in place unchanged.
 
-| Source field | Codex target | Status | Planned handling | Why |
-| --- | --- | --- | --- | --- |
-| `name` | `SKILL.md` `name` | Yes | Copy verbatim unless normalization is needed for filesystem safety. | Both tools use a skill name. |
-| `description` | `SKILL.md` `description` | Yes | Copy verbatim. | Both tools use description for discovery. |
-| `argument-hint` | Unchanged frontmatter | No | Copy unchanged. | Codex skills docs do not document an argument hint field, but the plan uses selective mutation rather than dropping unknown keys. |
-| `disable-model-invocation: true` | `agents/openai.yaml` `policy.allow_implicit_invocation: false` | Yes | Emit `agents/openai.yaml` with `allow_implicit_invocation: false`. | Codex documents this as the supported implicit-invocation control. |
-| `user-invocable: false` | Unchanged frontmatter | No | Copy unchanged. | Codex docs do not document a documented mutation for this field. |
-| `allowed-tools` | Unchanged frontmatter | No | Copy unchanged. | Current Codex docs do not document a Codex-specific mutation for this field. |
-| `model` | Unchanged frontmatter | No | Copy unchanged. | Codex docs do not document per-skill model selection. |
-| `context: fork` | Unchanged frontmatter | No | Copy unchanged. | The plan does not define a deterministic skill-to-role synthesis from this field. |
-| `agent` | Unchanged frontmatter | No | Copy unchanged. | The plan does not define a deterministic mutation for this field. |
-| `hooks` | Unchanged frontmatter | No | Copy unchanged. | Codex skills docs do not document skill-scoped hooks. |
-| Markdown body | `SKILL.md` body | Yes | Copy and rewrite migrated path references. | Both tools use markdown instructions as the skill body. |
+| Source field                     | Codex target                                                   | Status | Planned handling                                                    | Why                                                                                                                               |
+| -------------------------------- | -------------------------------------------------------------- | ------ | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                           | `SKILL.md` `name`                                              | Yes    | Copy verbatim unless normalization is needed for filesystem safety. | Both tools use a skill name.                                                                                                      |
+| `description`                    | `SKILL.md` `description`                                       | Yes    | Copy verbatim.                                                      | Both tools use description for discovery.                                                                                         |
+| `argument-hint`                  | Unchanged frontmatter                                          | No     | Copy unchanged.                                                     | Codex skills docs do not document an argument hint field, but the plan uses selective mutation rather than dropping unknown keys. |
+| `disable-model-invocation: true` | `agents/openai.yaml` `policy.allow_implicit_invocation: false` | Yes    | Emit `agents/openai.yaml` with `allow_implicit_invocation: false`.  | Codex documents this as the supported implicit-invocation control.                                                                |
+| `user-invocable: false`          | Unchanged frontmatter                                          | No     | Copy unchanged.                                                     | Codex docs do not document a documented mutation for this field.                                                                  |
+| `allowed-tools`                  | Unchanged frontmatter                                          | No     | Copy unchanged.                                                     | Current Codex docs do not document a Codex-specific mutation for this field.                                                      |
+| `model`                          | Unchanged frontmatter                                          | No     | Copy unchanged.                                                     | Codex docs do not document per-skill model selection.                                                                             |
+| `context: fork`                  | Unchanged frontmatter                                          | No     | Copy unchanged.                                                     | The plan does not define a deterministic skill-to-role synthesis from this field.                                                 |
+| `agent`                          | Unchanged frontmatter                                          | No     | Copy unchanged.                                                     | The plan does not define a deterministic mutation for this field.                                                                 |
+| `hooks`                          | Unchanged frontmatter                                          | No     | Copy unchanged.                                                     | Codex skills docs do not document skill-scoped hooks.                                                                             |
+| Markdown body                    | `SKILL.md` body                                                | Yes    | Copy and rewrite migrated path references.                          | Both tools use markdown instructions as the skill body.                                                                           |
 
 ### Claude skills and legacy commands: runtime features
 
-| Source feature | Codex target | Status | Planned handling | Why |
-| --- | --- | --- | --- | --- |
-| Supporting files in skill directory | Same files under `.agents/skills/<name>/` | Yes | Copy `scripts/`, `references/`, `assets/`, templates, and linked docs. | Codex skills support the same directory-style packaging model. |
-| `$ARGUMENTS` | Unchanged markdown content | No | Copy unchanged. | The plan does not support deterministic placeholder rewriting for skill bodies. |
-| `$ARGUMENTS[N]` | Unchanged markdown content | No | Copy unchanged. | No documented Codex equivalent and no deterministic rewrite is planned. |
-| `$N` shorthand | Unchanged markdown content | No | Copy unchanged. | No documented Codex equivalent and no deterministic rewrite is planned. |
-| `${CLAUDE_SESSION_ID}` | Unchanged markdown content | No | Copy unchanged. | No documented Codex skill variable equivalent. |
-| `${CLAUDE_SKILL_DIR}` | Unchanged markdown content | No | Copy unchanged. | The plan does not define a deterministic mutation for this variable. |
-| `!` command preprocessing | Unchanged markdown content | No | Copy unchanged. | Codex skills docs do not document command interpolation in `SKILL.md`, and no deterministic rewrite is planned. |
-| Commands as repo-shared markdown files | `.agents/skills/<name>/SKILL.md` | Yes | Convert commands into skills instead of Codex custom prompts. | Codex custom prompts are deprecated and user-local. |
+| Source feature                         | Codex target                              | Status | Planned handling                                                       | Why                                                                                                             |
+| -------------------------------------- | ----------------------------------------- | ------ | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Supporting files in skill directory    | Same files under `.agents/skills/<name>/` | Yes    | Copy `scripts/`, `references/`, `assets/`, templates, and linked docs. | Codex skills support the same directory-style packaging model.                                                  |
+| `$ARGUMENTS`                           | Unchanged markdown content                | No     | Copy unchanged.                                                        | The plan does not support deterministic placeholder rewriting for skill bodies.                                 |
+| `$ARGUMENTS[N]`                        | Unchanged markdown content                | No     | Copy unchanged.                                                        | No documented Codex equivalent and no deterministic rewrite is planned.                                         |
+| `$N` shorthand                         | Unchanged markdown content                | No     | Copy unchanged.                                                        | No documented Codex equivalent and no deterministic rewrite is planned.                                         |
+| `${CLAUDE_SESSION_ID}`                 | Unchanged markdown content                | No     | Copy unchanged.                                                        | No documented Codex skill variable equivalent.                                                                  |
+| `${CLAUDE_SKILL_DIR}`                  | Unchanged markdown content                | No     | Copy unchanged.                                                        | The plan does not define a deterministic mutation for this variable.                                            |
+| `!` command preprocessing              | Unchanged markdown content                | No     | Copy unchanged.                                                        | Codex skills docs do not document command interpolation in `SKILL.md`, and no deterministic rewrite is planned. |
+| Commands as repo-shared markdown files | `.agents/skills/<name>/SKILL.md`          | Yes    | Convert commands into skills instead of Codex custom prompts.          | Codex custom prompts are deprecated and user-local.                                                             |
 
 ### Claude subagents: frontmatter matrix
 
-| Source field | Codex target | Status | Planned handling | Why |
-| --- | --- | --- | --- | --- |
-| `name` | `[agents.<name>]` role name | Yes | Use as the Codex role id, normalizing only if required for TOML/key safety. | Both systems need a stable role identifier. |
-| `description` | `agents.<name>.description` | Yes | Copy verbatim. | Codex roles expose the same concept. |
-| Markdown body / `prompt` | `developer_instructions` in `agents/<name>.toml` | Yes | Copy as role-specific instructions. | This is the closest Codex equivalent to a Claude subagent prompt. |
-| `tools` | None | Partial | Infer `sandbox_mode = "read-only"` when `Edit` is absent from the allowed tool set; otherwise warn and drop the field. | Codex roles do not document per-role built-in tool allowlists. |
-| `disallowedTools` | None | Partial | Infer `sandbox_mode = "read-only"` when `Edit` is absent from the effective tool set or explicitly denied; otherwise warn and drop the field. | Codex roles do not document per-role built-in tool deny lists. |
-| `model` | `model` plus `model_reasoning_effort` | Yes | Map Claude aliases to Codex models via the plan’s deterministic mapping table. | Codex roles support `model` and reasoning effort. |
-| `permissionMode: default` | Inherit parent config | Yes | Omit explicit override and inherit parent behavior. | This is the closest semantic match. |
-| `permissionMode: plan` | `sandbox_mode = "read-only"` | Yes | Convert directly to a read-only role. | Codex documents read-only agent roles and this is the closest safe mapping. |
-| `permissionMode: acceptEdits` | None | Partial | Keep writable sandbox only when other signals already require it; otherwise warn and preserve no special approval override. | Codex does not document a direct per-role “auto-accept edits only” mode. |
-| `permissionMode: dontAsk` | Possible `approval_policy = "never"` compatibility mode | Partial | Do not auto-convert by default; optionally support a stricter compatibility mode later and warn in the base plan. | Codex approval semantics are similar but not identical. |
-| `permissionMode: bypassPermissions` | None by default | No | Do not auto-convert. Report as unsupported unless a future dangerous compatibility flag is introduced. | This would widen authority in a risky way. |
-| `maxTurns` | None | No | Report as unsupported. | Codex multi-agent role config does not document a per-role turn limit. |
-| `skills` | None | No | Report as unsupported. | Codex multi-agent role docs do not document per-role skill preloading. |
-| `mcpServers` | `mcp_servers.*` blocks in role TOML | Partial | Convert when the Claude server definition maps cleanly onto Codex MCP config fields; otherwise warn. | Codex role config can include MCP server config, but the schemas are not guaranteed identical. |
-| `hooks` | None | No | Report as unsupported. | Codex multi-agent role docs do not document role-scoped hooks. |
-| `memory` | None | No | Report as unsupported. | Codex multi-agent docs do not document per-role persistent memory directories. |
-| `background` | None | No | Report as unsupported. | Codex docs do not document a role field for always-run-in-background behavior. |
-| `isolation: worktree` | None | No | Report as unsupported. | Codex docs discuss worktrees as workflows, not as a per-role config field. |
+| Source field                        | Codex target                                            | Status  | Planned handling                                                                                                                              | Why                                                                                            |
+| ----------------------------------- | ------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `name`                              | `[agents.<name>]` role name                             | Yes     | Use as the Codex role id, normalizing only if required for TOML/key safety.                                                                   | Both systems need a stable role identifier.                                                    |
+| `description`                       | `agents.<name>.description`                             | Yes     | Copy verbatim.                                                                                                                                | Codex roles expose the same concept.                                                           |
+| Markdown body / `prompt`            | `developer_instructions` in `agents/<name>.toml`        | Yes     | Copy as role-specific instructions.                                                                                                           | This is the closest Codex equivalent to a Claude subagent prompt.                              |
+| `tools`                             | None                                                    | Partial | Infer `sandbox_mode = "read-only"` when `Edit` is absent from the allowed tool set; otherwise warn and drop the field.                        | Codex roles do not document per-role built-in tool allowlists.                                 |
+| `disallowedTools`                   | None                                                    | Partial | Infer `sandbox_mode = "read-only"` when `Edit` is absent from the effective tool set or explicitly denied; otherwise warn and drop the field. | Codex roles do not document per-role built-in tool deny lists.                                 |
+| `model`                             | `model` plus `model_reasoning_effort`                   | Yes     | Map Claude aliases to Codex models via the plan’s deterministic mapping table.                                                                | Codex roles support `model` and reasoning effort.                                              |
+| `permissionMode: default`           | Inherit parent config                                   | Yes     | Omit explicit override and inherit parent behavior.                                                                                           | This is the closest semantic match.                                                            |
+| `permissionMode: plan`              | `sandbox_mode = "read-only"`                            | Yes     | Convert directly to a read-only role.                                                                                                         | Codex documents read-only agent roles and this is the closest safe mapping.                    |
+| `permissionMode: acceptEdits`       | None                                                    | Partial | Keep writable sandbox only when other signals already require it; otherwise warn and preserve no special approval override.                   | Codex does not document a direct per-role “auto-accept edits only” mode.                       |
+| `permissionMode: dontAsk`           | Possible `approval_policy = "never"` compatibility mode | Partial | Do not auto-convert by default; optionally support a stricter compatibility mode later and warn in the base plan.                             | Codex approval semantics are similar but not identical.                                        |
+| `permissionMode: bypassPermissions` | None by default                                         | No      | Do not auto-convert. Report as unsupported unless a future dangerous compatibility flag is introduced.                                        | This would widen authority in a risky way.                                                     |
+| `maxTurns`                          | None                                                    | No      | Report as unsupported.                                                                                                                        | Codex multi-agent role config does not document a per-role turn limit.                         |
+| `skills`                            | None                                                    | No      | Report as unsupported.                                                                                                                        | Codex multi-agent role docs do not document per-role skill preloading.                         |
+| `mcpServers`                        | `mcp_servers.*` blocks in role TOML                     | Partial | Convert when the Claude server definition maps cleanly onto Codex MCP config fields; otherwise warn.                                          | Codex role config can include MCP server config, but the schemas are not guaranteed identical. |
+| `hooks`                             | None                                                    | No      | Report as unsupported.                                                                                                                        | Codex multi-agent role docs do not document role-scoped hooks.                                 |
+| `memory`                            | None                                                    | No      | Report as unsupported.                                                                                                                        | Codex multi-agent docs do not document per-role persistent memory directories.                 |
+| `background`                        | None                                                    | No      | Report as unsupported.                                                                                                                        | Codex docs do not document a role field for always-run-in-background behavior.                 |
+| `isolation: worktree`               | None                                                    | No      | Report as unsupported.                                                                                                                        | Codex docs discuss worktrees as workflows, not as a per-role config field.                     |
 
 ### Claude built-in agent names used by skills or subagents
 
-| Claude value | Codex target | Status | Planned handling | Why |
-| --- | --- | --- | --- | --- |
-| `Explore` | `explorer` role | Yes | Map directly to the Codex `explorer` built-in role name unless overridden. | This is the closest built-in semantic match. |
-| `general-purpose` | `worker` or `default` role | Partial | Default to `worker` for implementation-oriented tasks and `default` otherwise; warn when intent is unclear. | Codex built-ins are named differently. |
-| `Plan` | Custom `planner` or read-only review role | Partial | Generate a dedicated read-only role if the source relies on `Plan`; do not assume a built-in Codex equivalent exists. | Codex docs do not document a built-in `Plan` role. |
+| Claude value      | Codex target                              | Status  | Planned handling                                                                                                      | Why                                                |
+| ----------------- | ----------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `Explore`         | `explorer` role                           | Yes     | Map directly to the Codex `explorer` built-in role name unless overridden.                                            | This is the closest built-in semantic match.       |
+| `general-purpose` | `worker` or `default` role                | Partial | Default to `worker` for implementation-oriented tasks and `default` otherwise; warn when intent is unclear.           | Codex built-ins are named differently.             |
+| `Plan`            | Custom `planner` or read-only review role | Partial | Generate a dedicated read-only role if the source relies on `Plan`; do not assume a built-in Codex equivalent exists. | Codex docs do not document a built-in `Plan` role. |
 
 ### Claude rules
 

@@ -159,7 +159,13 @@ export function parseAgentFrontmatter(
     hooks: frontmatter.hooks,
     memory: parseOptionalField(frontmatter, "memory", nonEmptyStringSchema, sourcePath, issues),
     background: parseOptionalField(frontmatter, "background", booleanSchema, sourcePath, issues),
-    isolation: parseOptionalField(frontmatter, "isolation", nonEmptyStringSchema, sourcePath, issues),
+    isolation: parseOptionalField(
+      frontmatter,
+      "isolation",
+      nonEmptyStringSchema,
+      sourcePath,
+      issues,
+    ),
     issues,
   };
 }
@@ -170,7 +176,9 @@ export function filterSupportedMcpFields(value: Record<string, unknown>): Record
     return {};
   }
 
-  return Object.fromEntries(Object.entries(parsed.data).filter(([, entryValue]) => entryValue !== undefined));
+  return Object.fromEntries(
+    Object.entries(parsed.data).filter(([, entryValue]) => entryValue !== undefined),
+  );
 }
 
 function parseOptionalField<T>(
@@ -189,9 +197,7 @@ function parseOptionalField<T>(
     return parsed.data;
   }
 
-  const detail = parsed.error.issues
-    .map((issue) => issue.message)
-    .join("; ");
+  const detail = parsed.error.issues.map((issue) => issue.message).join("; ");
 
   issues.push({
     code: "frontmatter-invalid-field",

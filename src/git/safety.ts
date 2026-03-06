@@ -7,14 +7,10 @@ export function enforceSafety(context: RepoContext, options: CliOptions): void {
   }
 
   if (!context.isGitRepo && !options.dangerousNoGitBackup) {
-    throw new CliError(
-      "Writing outside a git repository requires --dangerous-no-git-backup.",
-    );
+    throw new CliError("Writing outside a git repository requires --dangerous-no-git-backup.");
   }
 
   if (context.isGitRepo && context.dirty && !options.dangerousAllowDirtyGit) {
-    throw new CliError(
-      "Writing in a dirty git worktree requires --dangerous-allow-dirty-git.",
-    );
+    throw new CliError("Writing in a dirty git worktree requires --dangerous-allow-dirty-git.");
   }
 }

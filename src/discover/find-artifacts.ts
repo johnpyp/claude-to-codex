@@ -32,7 +32,9 @@ export async function findArtifacts(rootDir: string): Promise<SourceArtifact[]> 
       });
 
       return paths
-        .filter((relativePath) => !(kind === "claude-md" && relativePath.split("/").includes(".claude")))
+        .filter(
+          (relativePath) => !(kind === "claude-md" && relativePath.split("/").includes(".claude")),
+        )
         .map((relativePath) => buildSourceArtifact(rootDir, relativePath, kind));
     }),
   );

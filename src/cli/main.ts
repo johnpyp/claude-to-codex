@@ -40,7 +40,9 @@ export async function executeCli(options: CliOptions): Promise<void> {
   enforceSafety(repoContext, options);
 
   const sourceArtifacts = await findArtifacts(repoContext.rootDir);
-  const parsedArtifacts = await Promise.all(sourceArtifacts.map((artifact) => parseArtifact(artifact)));
+  const parsedArtifacts = await Promise.all(
+    sourceArtifacts.map((artifact) => parseArtifact(artifact)),
+  );
 
   const normalized = toIntermediateRepresentation(repoContext.rootDir, parsedArtifacts);
   const intent = await buildConversionIntent(

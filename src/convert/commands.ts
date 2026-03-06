@@ -15,10 +15,7 @@ export function convertCommand(
   const parsed = parseFrontmatterDocument(command.source.rawContent);
   const rewrittenBody = rewriter.rewrite(parsed.content);
   const content =
-    stringifyFrontmatterDocument(
-      rewrittenBody.content.trimStart(),
-      parsed.data,
-    ).trimEnd() + "\n";
+    stringifyFrontmatterDocument(rewrittenBody.content.trimStart(), parsed.data).trimEnd() + "\n";
   const parsedFrontmatter = parseSkillLikeFrontmatter(
     command.source.frontmatter,
     command.source.relativePath,
