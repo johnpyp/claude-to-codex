@@ -1,59 +1,64 @@
 # claude-to-codex
 
-A Bun-based CLI that converts repo-scoped Claude Code artifacts into Codex-native outputs.
+Convert Claude Code repo artifacts into Codex-native equivalents. Run it once to migrate your project's `CLAUDE.md` files, skills, commands, and agent configs to the Codex format.
 
-## What it migrates
+## What it converts
 
-- `CLAUDE.md` to `AGENTS.md`
-- `CLAUDE.local.md` to `AGENTS.override.md`
-- `.claude/CLAUDE.md` to `.agents/AGENTS.md`
-- `.claude/skills/**` to `.agents/skills/**`
-- `.claude/commands/**` to `.agents/skills/**`
-- `.claude/agents/**` to `.codex/config.toml` and `agents/*.toml`
+| Claude Code                | Codex                                        |
+| -------------------------- | -------------------------------------------- |
+| `CLAUDE.md`                | `AGENTS.md`                                  |
+| `CLAUDE.local.md`          | `AGENTS.override.md`                         |
+| `.claude/CLAUDE.md`        | `.agents/AGENTS.md`                          |
+| `.claude/skills/**`        | `.agents/skills/**`                          |
+| `.claude/commands/**`      | `.agents/skills/**`                          |
+| `.claude/agents/**`        | `.codex/config.toml` and `agents/*.toml`     |
 
 `.claude/rules/**` are discovered only indirectly through copied text and are not converted.
 
-## Install
+## Usage
+
+The quickest way to run it is with `npx` (or your preferred package runner):
 
 ```bash
-bun install
+# Preview what would change (dry-run is the default)
+npx claude-to-codex@latest
+
+# Preview with machine-readable output
+npx claude-to-codex@latest --json
+
+# Apply changes
+npx claude-to-codex@latest --write
 ```
 
-## Run
-
-Dry-run is the default:
+Works with any Node package runner:
 
 ```bash
-bun run index.ts --json
+bunx claude-to-codex@latest --write
+pnpm dlx claude-to-codex@latest --write
 ```
 
-Write changes:
+### Options
 
-```bash
-bun run index.ts --write
+```
+--dry-run                     Plan changes without writing files (default)
+--write                       Write the planned changes
+--json                        Print machine-readable output
+--emit-report                 Write codex-migration-report.json after a successful write
+--root-dir <path>             Explicit conversion root
+--dangerous-allow-dirty-git   Allow writes when the git worktree has uncommitted changes
+--dangerous-no-git-backup     Allow writes without git-backed rollback safety
 ```
 
-Useful flags:
+## Safety
 
-- `--dry-run`
-- `--json`
-- `--write`
-- `--root-dir <path>`
-- `--dangerous-allow-dirty-git`
-- `--dangerous-no-git-backup`
+`claude-to-codex` is cautious by default:
 
-## Safety model
-
-- Requires git-root invocation by default.
-- Requires `--root-dir` to run outside git or from a non-root location.
-- Requires `--dangerous-allow-dirty-git` before writing in a dirty worktree.
-- Requires `--dangerous-no-git-backup` before writing outside git.
+- Runs from the git root automatically; use `--root-dir` to override.
+- Refuses to write in a dirty worktree unless you pass `--dangerous-allow-dirty-git`.
+- Refuses to write outside a git repo unless you pass `--dangerous-no-git-backup`.
 - Never writes to gitignored target paths.
-- Leaves unrelated existing Codex outputs in place instead of deleting them.
+- Leaves unrelated existing Codex outputs in place — it won't delete files it didn't create.
 
-## Verification
+## License
 
-```bash
-bun run check
-bun test
-```
+MIT
