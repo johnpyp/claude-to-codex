@@ -1,5 +1,8 @@
 # claude-to-codex
 
+> [!WARNING]
+> This project was primarily vibe-coded with GPT-5.4. It works, but review the output before trusting it blindly.
+
 Convert Claude Code repo artifacts into Codex-native equivalents. Run it once to migrate your project's `CLAUDE.md` files, skills, commands, and agent configs to the Codex format.
 
 ## What it converts
