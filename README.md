@@ -54,12 +54,14 @@ pnpm dlx claude-to-codex@latest --write
 Agent markdown files (`.claude/agents/<name>.md`) are converted into a central `.codex/config.toml` (enabling `multi_agent` and registering all roles) plus per-agent `.codex/agents/<role-id>.toml` files containing `developer_instructions`, `model`, `sandbox_mode`, and `mcp_servers`.
 
 **Converted agent features:**
+
 - Markdown body → `developer_instructions`
 - Inline `mcpServers` definitions (`command`, `args`, `url`, `env`, etc.) → `[mcp_servers.<name>]` in role TOML
 - `description` → registered in `config.toml`
 - Tool restrictions and permission modes → `sandbox_mode` inference (see [Models, Roles & Permissions](#models-roles--permissions))
 
 **Dropped agent features** (no Codex equivalent — warnings emitted):
+
 - `maxTurns`, `skills` (preload), `hooks`, `memory`, `background`, `isolation`
 - MCP servers referenced by name only (string array) — concrete config unavailable
 - `permissionMode: dontAsk` and `permissionMode: bypassPermissions`
@@ -79,16 +81,19 @@ Exact artifact source-to-target paths are applied first, then generic patterns c
 ### Models, Roles & Permissions
 
 **Model mapping:**
+
 - `opus` → `gpt-5.4` with `model_reasoning_effort = "high"`
 - `sonnet` → `gpt-5.4` with `model_reasoning_effort = "medium"`
 - `haiku` → `gpt-5.4` with `model_reasoning_effort = "low"`
 
 **Built-in role mapping:**
+
 - `Explore` → `explorer`
 - `general-purpose` → `worker` (approximated)
 - `Plan` → `planner` (forced `read-only` sandbox)
 
 **Permission and sandbox inference:**
+
 - `permissionMode: plan` → `sandbox_mode = "read-only"`
 - `permissionMode: acceptEdits` → inherited (approximated)
 - `tools` allowlist without `Edit`/`Write` → `sandbox_mode = "read-only"`

@@ -1,0 +1,44 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`claude-to-codex CLI writes migrated files and emits the report only when requested 1`] = `
+"# Root Claude
+
+- Read \`CLAUDE.md\` and \`CLAUDE.local.md\` before editing.
+- Hidden project guidance lives in \`.claude/CLAUDE.md\`.
+- Shared skills live in \`.agents/skills\` and \`.agents/skills/release/SKILL.md\`.
+- Legacy commands live in \`.agents/skills/review/SKILL.md\`.
+- Subagents live in \`.codex/agents/reviewer.toml\`.
+- Nested package guidance lives in \`packages/api/CLAUDE.md\`.
+- Leave \`.claude/rules/testing.md\` alone.
+
+## Prose references (for migration rewrites)
+
+- The root instructions file AGENTS.md is canonical.
+- Optional machine-specific rules go in AGENTS.override.md.
+- Hidden-scope notes live at .agents/AGENTS.md before you run the sync tool.
+- Nested packages may ship packages/api/AGENTS.md beside their code.
+"
+`;
+
+exports[`claude-to-codex CLI writes migrated files and emits the report only when requested 2`] = `
+"---
+name: release
+description: Run the project release workflow.
+argument-hint: "[version]"
+disable-model-invocation: true
+allowed-tools: Read, Bash
+model: sonnet
+context: fork
+agent: Explore
+hooks:
+  post-run: echo done
+---
+
+Use \`CLAUDE.md\` for the high level workflow.
+Skim AGENTS.md again before you publish.
+Read \`.agents/skills/release/references/checklist.md\` before starting.
+If you need a reviewer, see \`.codex/agents/reviewer.toml\`.
+Do not rewrite \`.claude/rules/testing.md\`.
+Run \`\${CLAUDE_SKILL_DIR}/scripts/release.sh\` with \`$ARGUMENTS\`.
+"
+`;

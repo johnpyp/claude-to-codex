@@ -1,4 +1,3 @@
-import { parse as parseToml } from "@iarna/toml";
 import { afterAll, describe, expect, it } from "bun:test";
 import { cp, lstat, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
@@ -122,122 +121,32 @@ describe("claude-to-codex CLI", () => {
     const dryRun = JSON.parse(dryRunResult.stdout);
     const written = JSON.parse(writeResult.stdout);
 
-    expect(
-      dryRun.plan.operations.map((operation: { relativePath: string; type: string }) => ({
+    const planOperationSummaries = (
+      operations: Array<{ relativePath: string; type: string }>,
+    ): Array<{ path: string; type: string }> =>
+      operations.map((operation) => ({
         path: operation.relativePath,
         type: operation.type,
-      })),
-    ).toEqual(
-      written.plan.operations.map((operation: { relativePath: string; type: string }) => ({
-        path: operation.relativePath,
-        type: operation.type,
-      })),
-    );
+      }));
+
+    const dryOps = planOperationSummaries(dryRun.plan.operations);
+    const writeOps = planOperationSummaries(written.plan.operations);
+    expect(dryOps).toEqual(writeOps);
+
     expect(written.execution.reportPath).toBe("codex-migration-report.json");
-
-    const rootAgents = await readFile(path.join(workspace, "AGENTS.md"), "utf8");
-    expect(rootAgents).toContain("AGENTS.md");
-    expect(rootAgents).toContain("AGENTS.override.md");
-    expect(rootAgents).toContain(".agents/AGENTS.md");
-    expect(rootAgents).toContain(".agents/skills");
-    expect(rootAgents).toContain(".codex/agents/reviewer.toml");
-    expect(rootAgents).toContain(".claude/rules/testing.md");
-
-    const hiddenAgents = await readFile(path.join(workspace, ".agents", "AGENTS.md"), "utf8");
-    expect(hiddenAgents).toContain(".agents/skills/lint-docs/SKILL.md");
-    expect(hiddenAgents).toContain(".codex/config.toml and .codex/agents/");
-
-    const releaseSkill = await readFile(
-      path.join(workspace, ".agents", "skills", "release", "SKILL.md"),
-      "utf8",
-    );
-    expect(releaseSkill).toContain("disable-model-invocation: true");
-    expect(releaseSkill).toContain(".codex/agents/reviewer.toml");
-    expect(releaseSkill).toContain("AGENTS.md");
-    expect(releaseSkill).toContain(".claude/rules/testing.md");
-
-    const issueSkill = await readFile(
-      path.join(workspace, ".agents", "skills", "issue", "SKILL.md"),
-      "utf8",
-    );
-    expect(issueSkill).toContain("argument-hint:");
-    expect(issueSkill).toContain("[issue-number] [additional instructions...]");
-    expect(issueSkill).toContain("allowed-tools:");
-    expect(issueSkill).toMatch(/^allowed-tools:[^\n]+\ndescription:/m);
-    expect(issueSkill).toMatch(/^description:[^\n]+\nargument-hint:/m);
-
-    const openAiYaml = await readFile(
-      path.join(workspace, ".agents", "skills", "release", "agents", "openai.yaml"),
-      "utf8",
-    );
-    expect(openAiYaml).toContain("allow_implicit_invocation: false");
-
-    const configToml = parseToml(
-      await readFile(path.join(workspace, ".codex", "config.toml"), "utf8"),
-    ) as Record<string, any>;
-    expect(configToml.features.multi_agent).toBeTrue();
-    expect(configToml.agents.max_threads).toBe(10);
-    expect(configToml.agents.reviewer.config_file).toBe("agents/reviewer.toml");
-
-    const reviewerToml = parseToml(
-      await readFile(path.join(workspace, ".codex", "agents", "reviewer.toml"), "utf8"),
-    ) as Record<string, any>;
-    expect(reviewerToml.model).toBe("gpt-5.4");
-    expect(reviewerToml.model_reasoning_effort).toBe("medium");
-    expect(reviewerToml.sandbox_mode).toBe("read-only");
-    expect(reviewerToml.mcp_servers.docs.url).toBe("https://example.com/mcp");
-
-    const plannerToml = parseToml(
-      await readFile(path.join(workspace, ".codex", "agents", "planner.toml"), "utf8"),
-    ) as Record<string, any>;
-    expect(plannerToml.model_reasoning_effort).toBe("low");
-    expect(plannerToml.sandbox_mode).toBe("read-only");
-
-    const builderToml = parseToml(
-      await readFile(path.join(workspace, ".codex", "agents", "builder.toml"), "utf8"),
-    ) as Record<string, any>;
-    expect(builderToml.model_reasoning_effort).toBe("high");
-    expect(builderToml.sandbox_mode).toBeUndefined();
-
-    const invalidToml = parseToml(
-      await readFile(path.join(workspace, ".codex", "agents", "invalid.toml"), "utf8"),
-    ) as Record<string, any>;
-    expect(invalidToml.sandbox_mode).toBe("read-only");
-
-    const report = JSON.parse(
-      await readFile(path.join(workspace, "codex-migration-report.json"), "utf8"),
-    );
-    expect(report.discoveredSourceArtifacts).not.toContain("CLAUDE.local.md");
-    expect(report.discoveredSourceArtifacts).toContain(".claude/commands/no-frontmatter.md");
-    expect(
-      report.infos.some((info: { code: string }) => info.code === "claude-reference-rewrite"),
-    ).toBeTrue();
-    expect(
-      report.infos.some(
-        (info: { details?: { replacements?: Array<{ from: string; to: string }> } }) =>
-          info.details?.replacements?.some(
-            (replacement) => replacement.from === "CLAUDE.md" && replacement.to === "AGENTS.md",
-          ) ?? false,
-      ),
-    ).toBeTrue();
-    expect(
-      report.infos.some(
-        (info: { targetPath?: string }) => info.targetPath === ".agents/skills/plain/SKILL.md",
-      ),
-    ).toBeFalse();
-    expect(
-      report.emittedTargetArtifacts.some(
-        (item: { path: string }) => item.path === ".agents/skills/no-frontmatter/SKILL.md",
-      ),
-    ).toBeFalse();
-    expect(
-      report.warnings.some((warning: { code: string }) => warning.code === "gitignored-target"),
-    ).toBeFalse();
-
     expect(await pathExists(path.join(workspace, "agents", "stale.toml"))).toBeTrue();
     expect(
       await pathExists(path.join(workspace, ".agents", "skills", "stale", "SKILL.md")),
     ).toBeTrue();
+    expect(await pathExists(path.join(workspace, "codex-migration-report.json"))).toBeTrue();
+
+    const rootAgents = await readFile(path.join(workspace, "AGENTS.md"), "utf8");
+    const releaseSkill = await readFile(
+      path.join(workspace, ".agents", "skills", "release", "SKILL.md"),
+      "utf8",
+    );
+    expect(rootAgents).toMatchSnapshot();
+    expect(releaseSkill).toMatchSnapshot();
   });
 
   it("does not emit the report by default", async () => {

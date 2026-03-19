@@ -12,6 +12,7 @@ hooks:
 ---
 
 Use `CLAUDE.md` for the high level workflow.
+Skim CLAUDE.md again before you publish.
 Read `.claude/skills/release/references/checklist.md` before starting.
 If you need a reviewer, see `.claude/agents/reviewer.md`.
 Do not rewrite `.claude/rules/testing.md`.
