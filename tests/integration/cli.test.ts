@@ -163,6 +163,8 @@ describe("claude-to-codex CLI", () => {
     expect(issueSkill).toContain("argument-hint:");
     expect(issueSkill).toContain("[issue-number] [additional instructions...]");
     expect(issueSkill).toContain("allowed-tools:");
+    expect(issueSkill).toMatch(/^allowed-tools:[^\n]+\ndescription:/m);
+    expect(issueSkill).toMatch(/^description:[^\n]+\nargument-hint:/m);
 
     const openAiYaml = await readFile(
       path.join(workspace, ".agents", "skills", "release", "agents", "openai.yaml"),

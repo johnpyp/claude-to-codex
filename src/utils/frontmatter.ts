@@ -1,4 +1,6 @@
-import YAML from "yaml";
+import { parse, stringify } from "yaml";
+
+import { yamlStringifyOptions } from "./yaml-stringify.js";
 
 export interface ParsedFrontmatterDocument {
   data: Record<string, unknown>;
@@ -34,7 +36,7 @@ export function stringifyFrontmatterDocument(
     return content;
   }
 
-  const frontmatter = YAML.stringify(data).trimEnd();
+  const frontmatter = stringify(data, yamlStringifyOptions).trimEnd();
   const normalizedContent = content.replace(/^\n+/, "");
 
   if (normalizedContent.length === 0) {
@@ -46,7 +48,7 @@ export function stringifyFrontmatterDocument(
 
 function parseFrontmatterRecord(rawFrontmatter: string): Record<string, unknown> {
   try {
-    const parsed = YAML.parse(rawFrontmatter);
+    const parsed = parse(rawFrontmatter);
     return isRecord(parsed) ? parsed : {};
   } catch {
     return parseClaudeCompatibleFrontmatter(rawFrontmatter);
@@ -92,7 +94,7 @@ function parseFieldValue(key: string, lines: string[]): unknown {
   const fieldSource = `${lines.join("\n")}\n`;
 
   try {
-    const parsed = YAML.parse(fieldSource);
+    const parsed = parse(fieldSource);
     if (isRecord(parsed) && key in parsed) {
       return parsed[key];
     }
@@ -116,7 +118,7 @@ function parseScalarValue(value: string): unknown {
   }
 
   try {
-    return YAML.parse(value);
+    return parse(value);
   } catch {
     return value;
   }
