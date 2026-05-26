@@ -172,11 +172,11 @@ function mapClaudeModel(model: string | undefined): {
 } {
   switch ((model ?? "inherit").toLowerCase()) {
     case "opus":
-      return { model: "gpt-5.4", modelReasoningEffort: "high" };
+      return { model: "gpt-5.5", modelReasoningEffort: "high" };
     case "sonnet":
-      return { model: "gpt-5.4", modelReasoningEffort: "medium" };
+      return { model: "gpt-5.5", modelReasoningEffort: "medium" };
     case "haiku":
-      return { model: "gpt-5.4", modelReasoningEffort: "low" };
+      return { model: "gpt-5.5", modelReasoningEffort: "low" };
     default:
       return {};
   }
