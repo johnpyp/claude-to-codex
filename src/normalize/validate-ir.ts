@@ -6,7 +6,7 @@ import type {
   ParsedArtifact,
   ReportItem,
 } from "../core/types.js";
-import { normalizeRoleId } from "../utils/text.js";
+import { normalizeRoleId, toPosix } from "../utils/text.js";
 import { filterSupportedMcpFields, parseAgentFrontmatter } from "./schemas.js";
 
 export function normalizeAgent(rootDir: string, artifact: ParsedArtifact): NormalizedAgent {
@@ -145,9 +145,8 @@ export function normalizeAgent(rootDir: string, artifact: ParsedArtifact): Norma
       roleId,
       description,
       configFileAbsolutePath: path.join(artifact.scopeDir, ".codex", "agents", `${roleId}.toml`),
-      configFileRelativePath: path.relative(
-        rootDir,
-        path.join(artifact.scopeDir, ".codex", "agents", `${roleId}.toml`),
+      configFileRelativePath: toPosix(
+        path.relative(rootDir, path.join(artifact.scopeDir, ".codex", "agents", `${roleId}.toml`)),
       ),
       model,
       modelReasoningEffort,

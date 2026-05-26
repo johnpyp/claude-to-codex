@@ -26,6 +26,10 @@ const TEXT_EXTENSIONS = new Set([
   ".yml",
 ]);
 
+export function toPosix(value: string): string {
+  return value.split(path.sep).join("/");
+}
+
 export function normalizeIdentifier(value: string, fallback: string): string {
   const normalized = value
     .trim()
@@ -71,7 +75,7 @@ export function createClaudeReferenceRewriter(
       if (artifact.kind === "command") {
         return {
           from: artifact.source.relativePath,
-          to: path.join(artifact.targetDirRelativePath, "SKILL.md"),
+          to: path.posix.join(artifact.targetDirRelativePath, "SKILL.md"),
         };
       }
 
@@ -84,7 +88,7 @@ export function createClaudeReferenceRewriter(
 
       return {
         from: artifact.source.relativePath,
-        to: path.join(artifact.targetDirRelativePath, "SKILL.md"),
+        to: path.posix.join(artifact.targetDirRelativePath, "SKILL.md"),
       };
     })
     .filter((replacement) => replacement.from !== replacement.to)

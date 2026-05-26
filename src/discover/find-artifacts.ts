@@ -62,7 +62,7 @@ function resolveScopeDir(rootDir: string, relativePath: string, kind: ArtifactKi
   const absolutePath = path.join(rootDir, relativePath);
 
   if (kind === "claude-hidden-md" || kind === "skill" || kind === "command" || kind === "agent") {
-    const parts = relativePath.split(path.sep);
+    const parts = relativePath.split("/");
     const claudeIndex = parts.indexOf(".claude");
     if (claudeIndex > -1) {
       return path.join(rootDir, ...parts.slice(0, claudeIndex));

@@ -5,6 +5,7 @@ import { buildRewriteInfo } from "./rewrite-info.js";
 import { stringifyFrontmatterDocument, parseFrontmatterDocument } from "../utils/frontmatter.js";
 import { parseSkillLikeFrontmatter } from "../normalize/schemas.js";
 import { renderYaml } from "../emit/yaml.js";
+import { toPosix } from "../utils/text.js";
 
 export function convertCommand(
   command: NormalizedCommand,
@@ -12,6 +13,7 @@ export function convertCommand(
   rewriter: ClaudeReferenceRewriter,
 ): GeneratedFile[] {
   const skillPath = path.join(command.targetDirAbsolutePath, "SKILL.md");
+  const skillRelativePath = toPosix(path.relative(rootDir, skillPath));
   const parsed = parseFrontmatterDocument(command.source.rawContent);
   const rewrittenBody = rewriter.rewrite(parsed.content);
   const content =
@@ -24,13 +26,13 @@ export function convertCommand(
   const files: GeneratedFile[] = [
     {
       absolutePath: skillPath,
-      relativePath: path.relative(rootDir, skillPath),
+      relativePath: skillRelativePath,
       content,
       encoding: "utf8",
       sourcePaths: [command.source.relativePath],
       infos: buildRewriteInfo(
         command.source.relativePath,
-        path.relative(rootDir, skillPath),
+        skillRelativePath,
         rewrittenBody.replacements,
       ),
       generator: "command",
@@ -41,7 +43,7 @@ export function convertCommand(
     const policyPath = path.join(command.targetDirAbsolutePath, "agents", "openai.yaml");
     files.push({
       absolutePath: policyPath,
-      relativePath: path.relative(rootDir, policyPath),
+      relativePath: toPosix(path.relative(rootDir, policyPath)),
       content: renderYaml({
         policy: {
           allow_implicit_invocation: false,

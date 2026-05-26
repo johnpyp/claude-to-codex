@@ -7,7 +7,7 @@ import type {
   NormalizedSkill,
   ParsedArtifact,
 } from "../core/types.js";
-import { normalizeIdentifier } from "../utils/text.js";
+import { normalizeIdentifier, toPosix } from "../utils/text.js";
 import type { ParsedSkillLikeFrontmatter } from "./schemas.js";
 import { parseSkillLikeFrontmatter } from "./schemas.js";
 import { normalizeAgent } from "./validate-ir.js";
@@ -103,7 +103,7 @@ function normalizeClaudeDoc(rootDir: string, artifact: ParsedArtifact): Normaliz
     kind: "claude-doc",
     source: artifact,
     targetAbsolutePath,
-    targetRelativePath: path.relative(rootDir, targetAbsolutePath) || ".",
+    targetRelativePath: toPosix(path.relative(rootDir, targetAbsolutePath)) || ".",
   };
 }
 
@@ -125,9 +125,9 @@ function normalizeSkill(
     kind: "skill",
     source: artifact,
     sourceDirAbsolutePath,
-    sourceDirRelativePath: path.relative(rootDir, sourceDirAbsolutePath),
+    sourceDirRelativePath: toPosix(path.relative(rootDir, sourceDirAbsolutePath)),
     targetDirAbsolutePath,
-    targetDirRelativePath: path.relative(rootDir, targetDirAbsolutePath),
+    targetDirRelativePath: toPosix(path.relative(rootDir, targetDirAbsolutePath)),
     skillName: parsedFrontmatter.name ?? fallbackName,
   };
 }
@@ -149,7 +149,7 @@ function normalizeCommand(
     kind: "command",
     source: artifact,
     targetDirAbsolutePath,
-    targetDirRelativePath: path.relative(rootDir, targetDirAbsolutePath),
+    targetDirRelativePath: toPosix(path.relative(rootDir, targetDirAbsolutePath)),
     skillName: parsedFrontmatter.name ?? skillDirName,
   };
 }
