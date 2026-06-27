@@ -85,6 +85,7 @@ Exact artifact source-to-target paths are applied first, then generic patterns c
 - `opus` → `gpt-5.5` with `model_reasoning_effort = "xhigh"`
 - `sonnet` → `gpt-5.5` with `model_reasoning_effort = "high"`
 - `haiku` → `gpt-5.5` with `model_reasoning_effort = "medium"`
+- Subagent `effort` overrides the mapped reasoning effort: `max`, `xhigh`, and `high` → `xhigh`; `medium` → `high`; `low` → `medium`.
 
 **Built-in role mapping:**
 

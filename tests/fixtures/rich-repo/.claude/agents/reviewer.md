@@ -2,6 +2,7 @@
 name: reviewer
 description: Review code for regressions.
 model: sonnet
+effort: max
 disallowedTools: Edit, Write
 mcpServers:
   docs:

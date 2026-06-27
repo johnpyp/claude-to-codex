@@ -140,6 +140,13 @@ describe("claude-to-codex CLI", () => {
     ).toBeTrue();
     expect(await pathExists(path.join(workspace, "codex-migration-report.json"))).toBeTrue();
 
+    const reviewerRole = await readFile(
+      path.join(workspace, ".codex", "agents", "reviewer.toml"),
+      "utf8",
+    );
+    expect(reviewerRole).toContain('model = "gpt-5.5"');
+    expect(reviewerRole).toContain('model_reasoning_effort = "xhigh"');
+
     const rootAgents = await readFile(path.join(workspace, "AGENTS.md"), "utf8");
     const releaseSkill = await readFile(
       path.join(workspace, ".agents", "skills", "release", "SKILL.md"),

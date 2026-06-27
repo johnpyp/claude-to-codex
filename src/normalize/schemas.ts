@@ -24,6 +24,7 @@ const permissionModeSchema = z.enum([
   "bypassPermissions",
   "plan",
 ]);
+const effortSchema = z.enum(["low", "medium", "high", "xhigh", "max"]);
 const mcpServerInlineSchema = z
   .object({
     args: z.array(z.string()).optional(),
@@ -61,6 +62,7 @@ export interface ParsedAgentFrontmatter {
   tools?: string[];
   disallowedTools?: string[];
   model?: string;
+  effort?: z.infer<typeof effortSchema>;
   permissionMode?: z.infer<typeof permissionModeSchema>;
   maxTurns?: number;
   skills?: string[];
@@ -146,6 +148,7 @@ export function parseAgentFrontmatter(
       issues,
     ),
     model: parseOptionalField(frontmatter, "model", nonEmptyStringSchema, sourcePath, issues),
+    effort: parseOptionalField(frontmatter, "effort", effortSchema, sourcePath, issues),
     permissionMode: parseOptionalField(
       frontmatter,
       "permissionMode",

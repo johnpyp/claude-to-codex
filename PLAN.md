@@ -338,6 +338,7 @@ Conversion rule for this section: copy the entire frontmatter first, then mutate
 | `tools`                             | None                                                    | Partial | Infer `sandbox_mode = "read-only"` when `Edit` is absent from the allowed tool set; otherwise warn and drop the field.                        | Codex roles do not document per-role built-in tool allowlists.                                 |
 | `disallowedTools`                   | None                                                    | Partial | Infer `sandbox_mode = "read-only"` when `Edit` is absent from the effective tool set or explicitly denied; otherwise warn and drop the field. | Codex roles do not document per-role built-in tool deny lists.                                 |
 | `model`                             | `model` plus `model_reasoning_effort`                   | Yes     | Map Claude aliases to Codex models via the plan’s deterministic mapping table.                                                                | Codex roles support `model` and reasoning effort.                                              |
+| `effort`                            | `model_reasoning_effort`                                | Yes     | Map Claude effort levels upward by one, with `max`, `xhigh`, and `high` all becoming `xhigh`; this overrides the effort implied by `model`.   | Claude subagent effort overrides the session effort, and Codex roles support reasoning effort. |
 | `permissionMode: default`           | Inherit parent config                                   | Yes     | Omit explicit override and inherit parent behavior.                                                                                           | This is the closest semantic match.                                                            |
 | `permissionMode: plan`              | `sandbox_mode = "read-only"`                            | Yes     | Convert directly to a read-only role.                                                                                                         | Codex documents read-only agent roles and this is the closest safe mapping.                    |
 | `permissionMode: acceptEdits`       | None                                                    | Partial | Keep writable sandbox only when other signals already require it; otherwise warn and preserve no special approval override.                   | Codex does not document a direct per-role “auto-accept edits only” mode.                       |
@@ -535,6 +536,12 @@ Recommended model mapping policy:
 - `sonnet` -> `model = "gpt-5.5"` + `model_reasoning_effort = "high"`
 - `haiku` -> `model = "gpt-5.5"` + `model_reasoning_effort = "medium"`
 - `inherit` or omitted -> inherit parent session unless a concrete role file is required
+
+Claude subagent `effort` overrides the mapped reasoning effort:
+
+- `max`, `xhigh`, `high` -> `model_reasoning_effort = "xhigh"`
+- `medium` -> `model_reasoning_effort = "high"`
+- `low` -> `model_reasoning_effort = "medium"`
 
 Optional optimization mode:
 

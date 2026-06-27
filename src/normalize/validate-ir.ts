@@ -84,7 +84,10 @@ export function normalizeAgent(rootDir: string, artifact: ParsedArtifact): Norma
     });
   }
 
-  const { model, modelReasoningEffort } = mapClaudeModel(parsedFrontmatter.model);
+  const modelMapping = mapClaudeModel(parsedFrontmatter.model);
+  const model = modelMapping.model;
+  const modelReasoningEffort =
+    mapClaudeEffort(parsedFrontmatter.effort) ?? modelMapping.modelReasoningEffort;
 
   const mcpServers = parseMcpServers(
     parsedFrontmatter.mcpServers,
@@ -179,6 +182,21 @@ function mapClaudeModel(model: string | undefined): {
       return { model: "gpt-5.5", modelReasoningEffort: "medium" };
     default:
       return {};
+  }
+}
+
+function mapClaudeEffort(effort: string | undefined): string | undefined {
+  switch (effort) {
+    case "max":
+    case "xhigh":
+    case "high":
+      return "xhigh";
+    case "medium":
+      return "high";
+    case "low":
+      return "medium";
+    default:
+      return undefined;
   }
 }
 
