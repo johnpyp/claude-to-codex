@@ -6,7 +6,7 @@ import type {
   ParsedArtifact,
   ReportItem,
 } from "../core/types.js";
-import { normalizeRoleId } from "../utils/text.js";
+import { normalizeRoleId, toPosix } from "../utils/text.js";
 import { filterSupportedMcpFields, parseAgentFrontmatter } from "./schemas.js";
 
 export function normalizeAgent(rootDir: string, artifact: ParsedArtifact): NormalizedAgent {
@@ -145,9 +145,8 @@ export function normalizeAgent(rootDir: string, artifact: ParsedArtifact): Norma
       roleId,
       description,
       configFileAbsolutePath: path.join(artifact.scopeDir, ".codex", "agents", `${roleId}.toml`),
-      configFileRelativePath: path.relative(
-        rootDir,
-        path.join(artifact.scopeDir, ".codex", "agents", `${roleId}.toml`),
+      configFileRelativePath: toPosix(
+        path.relative(rootDir, path.join(artifact.scopeDir, ".codex", "agents", `${roleId}.toml`)),
       ),
       model,
       modelReasoningEffort,
@@ -173,11 +172,11 @@ function mapClaudeModel(model: string | undefined): {
 } {
   switch ((model ?? "inherit").toLowerCase()) {
     case "opus":
-      return { model: "gpt-5.4", modelReasoningEffort: "high" };
+      return { model: "gpt-5.5", modelReasoningEffort: "high" };
     case "sonnet":
-      return { model: "gpt-5.4", modelReasoningEffort: "medium" };
+      return { model: "gpt-5.5", modelReasoningEffort: "medium" };
     case "haiku":
-      return { model: "gpt-5.4", modelReasoningEffort: "low" };
+      return { model: "gpt-5.5", modelReasoningEffort: "low" };
     default:
       return {};
   }

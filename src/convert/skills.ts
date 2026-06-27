@@ -7,7 +7,7 @@ import { renderYaml } from "../emit/yaml.js";
 import { readArtifactBytes, readArtifactUtf8 } from "../discover/read-file.js";
 import { parseSkillLikeFrontmatter } from "../normalize/schemas.js";
 import { parseFrontmatterDocument, stringifyFrontmatterDocument } from "../utils/frontmatter.js";
-import { isLikelyTextFile } from "../utils/text.js";
+import { isLikelyTextFile, toPosix } from "../utils/text.js";
 
 export async function convertSkill(
   skill: NormalizedSkill,
@@ -29,7 +29,7 @@ export async function convertSkill(
   for (const relativePath of files.sort((left, right) => left.localeCompare(right))) {
     const sourceAbsolutePath = path.join(skill.sourceDirAbsolutePath, relativePath);
     const targetAbsolutePath = path.join(skill.targetDirAbsolutePath, relativePath);
-    const targetRelativePath = path.relative(rootDir, targetAbsolutePath);
+    const targetRelativePath = toPosix(path.relative(rootDir, targetAbsolutePath));
 
     if (relativePath === "SKILL.md") {
       const rawContent = await readArtifactUtf8(sourceAbsolutePath);
@@ -85,7 +85,7 @@ export async function convertSkill(
     const policyPath = path.join(skill.targetDirAbsolutePath, "agents", "openai.yaml");
     generatedFiles.push({
       absolutePath: policyPath,
-      relativePath: path.relative(rootDir, policyPath),
+      relativePath: toPosix(path.relative(rootDir, policyPath)),
       content: renderYaml({
         policy: {
           allow_implicit_invocation: false,

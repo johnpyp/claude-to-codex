@@ -21,6 +21,7 @@ import {
   writeBytes,
   writeUtf8,
 } from "../utils/fs.js";
+import { toPosix } from "../utils/text.js";
 
 export class ConversionPlanExecutor {
   async createPlan(intent: ConversionIntent, context: RepoContext): Promise<ConversionPlan> {
@@ -88,7 +89,7 @@ export class ConversionPlanExecutor {
       const reportPath = path.join(plan.rootDir, "codex-migration-report.json");
       const report = buildMigrationReport(intent, plan, result);
       await writeUtf8(reportPath, JSON.stringify(report, null, 2) + "\n");
-      result.reportPath = path.relative(plan.rootDir, reportPath);
+      result.reportPath = toPosix(path.relative(plan.rootDir, reportPath));
     }
 
     return result;

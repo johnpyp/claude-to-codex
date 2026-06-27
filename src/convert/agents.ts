@@ -2,6 +2,7 @@ import path from "node:path";
 
 import type { GeneratedFile, NormalizedAgent } from "../core/types.js";
 import { renderToml } from "../emit/toml.js";
+import { toPosix } from "../utils/text.js";
 
 export function convertAgents(agents: NormalizedAgent[], rootDir: string): GeneratedFile[] {
   if (agents.length === 0) {
@@ -21,9 +22,8 @@ export function convertAgents(agents: NormalizedAgent[], rootDir: string): Gener
         agent.roleId,
         {
           description: agent.description ?? "",
-          config_file: path.relative(
-            path.dirname(configPath),
-            agent.roleConfig.configFileAbsolutePath,
+          config_file: toPosix(
+            path.relative(path.dirname(configPath), agent.roleConfig.configFileAbsolutePath),
           ),
         },
       ]),
@@ -32,7 +32,7 @@ export function convertAgents(agents: NormalizedAgent[], rootDir: string): Gener
   const files: GeneratedFile[] = [
     {
       absolutePath: configPath,
-      relativePath: path.relative(rootDir, configPath),
+      relativePath: toPosix(path.relative(rootDir, configPath)),
       content: renderToml({
         features: {
           multi_agent: true,
