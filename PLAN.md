@@ -531,9 +531,9 @@ Per-role config files should contain the role-specific settings Codex actually s
 
 Recommended model mapping policy:
 
-- `opus` -> `model = "gpt-5.4"` + `model_reasoning_effort = "high"`
-- `sonnet` -> `model = "gpt-5.4"` + `model_reasoning_effort = "medium"`
-- `haiku` -> `model = "gpt-5.4"` + `model_reasoning_effort = "low"`
+- `opus` -> `model = "gpt-5.5"` + `model_reasoning_effort = "xhigh"`
+- `sonnet` -> `model = "gpt-5.5"` + `model_reasoning_effort = "high"`
+- `haiku` -> `model = "gpt-5.5"` + `model_reasoning_effort = "medium"`
 - `inherit` or omitted -> inherit parent session unless a concrete role file is required
 
 Optional optimization mode:

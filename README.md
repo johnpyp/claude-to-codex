@@ -82,9 +82,9 @@ Exact artifact source-to-target paths are applied first, then generic patterns c
 
 **Model mapping:**
 
-- `opus` → `gpt-5.4` with `model_reasoning_effort = "high"`
-- `sonnet` → `gpt-5.4` with `model_reasoning_effort = "medium"`
-- `haiku` → `gpt-5.4` with `model_reasoning_effort = "low"`
+- `opus` → `gpt-5.5` with `model_reasoning_effort = "xhigh"`
+- `sonnet` → `gpt-5.5` with `model_reasoning_effort = "high"`
+- `haiku` → `gpt-5.5` with `model_reasoning_effort = "medium"`
 
 **Built-in role mapping:**
 
